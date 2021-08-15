@@ -18,7 +18,7 @@
 
         public ICalculator CreateCachedCalculator()
         {
-            return new CachedPaymentDecorator();
+            return new CachedPaymentDecorator(currencyService, tripRepository);
         }
 
         public ICalculator CreateCalculator()
@@ -28,12 +28,12 @@
 
         public ICalculator CreateLoggingCalculator()
         {
-            return new LoggingCalculatorDecorator();
+            return new LoggingCalculatorDecorator(currencyService, tripRepository, logger);
         }
 
         public ICalculator CreateRoundingCalculator()
         {
-            return new RoundingCalculatorDecorator();
+            return new RoundingCalculatorDecorator(currencyService, tripRepository, logger);
         }
     }
 }
