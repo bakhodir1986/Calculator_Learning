@@ -25,7 +25,38 @@ namespace Calculator.Task4
 
         public ICalculator CreateCalculator(bool withLogging, bool withCaching, bool withRounding)
         {
-            throw new NotImplementedException();
+            ICalculator source = new InsurancePaymentCalculator(currencyService, tripRepository);
+
+            if (withCaching && withRounding && withLogging)
+            {
+                source = new RoundingCalculatorDecorator(new CachedPaymentDecorator(new LoggingCalculatorDecorator(source, logger)));
+            }
+            else if (withLogging && withCaching)
+            {
+                source = new CachedPaymentDecorator(new LoggingCalculatorDecorator(source, logger));
+            }
+            else if (withLogging && withRounding)
+            {
+                source = new RoundingCalculatorDecorator(new LoggingCalculatorDecorator(source, logger));
+            }
+            else if (withCaching && withRounding)
+            {
+                source = new RoundingCalculatorDecorator(new CachedPaymentDecorator(source));
+            }
+            else if(withLogging)
+            {
+                source = new LoggingCalculatorDecorator(source, logger);
+            }
+            else if (withCaching)
+            {
+                source = new CachedPaymentDecorator(source);
+            }
+            else if (withRounding)
+            {
+                source = new RoundingCalculatorDecorator(source);
+            }
+
+            return source;
         }
     }
 }
